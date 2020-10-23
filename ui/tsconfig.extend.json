@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      // baseUrl is optional for plugin, but some IDEs require it
+      "baseUrl": "./src",
+      "paths": {
+        "~Api": ["services/api"],
+        "~Assets/*": ["assets/*"],
+        "~Components/*": ["components/*"],
+        "~Routes*": ["routes/*", "routes"],
+        "~Screens/*": ["screens/*"],
+        "~Theme": ["theme"],
+      }
+    }
+  }
+  
