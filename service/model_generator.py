@@ -111,22 +111,31 @@ def algoritmo(user):
         i = 0
         results = firebase.get('users/' + key + '/primero','')
         for key2, value in results.items():
-            
-            data_notas[k, i] = float(value[0:2])
-            data_interes[k, i] = float(value[2])
-            data_gustado[k, i] = float(value[3])
-            data_suspensos[k, i] = float(value[4])*(-1)
+            if(value == ''):
+                data_notas[k, i] = 0.0
+                data_interes[k, i] = 0.0
+                data_gustado[k, i] = 0.0
+                data_suspensos[k, i] = 0.0
+            else:
+                data_notas[k, i] = float(value[0:2])
+                data_interes[k, i] = float(value[2])
+                data_gustado[k, i] = float(value[3])
+                data_suspensos[k, i] = float(value[4])*(-1)
             i += 1
 
         results = firebase.get('users/' + key + '/segundo','')
 
         for key2, value in results.items():
-            
-            
-            data_notas[k, i] = float(value[0:2])
-            data_interes[k, i] = float(value[2])
-            data_gustado[k, i] = float(value[3])
-            data_suspensos[k, i] = float(value[4])*(-1)
+            if(value == ''):
+                data_notas[k, i] = 0.0
+                data_interes[k, i] = 0.0
+                data_gustado[k, i] = 0.0
+                data_suspensos[k, i] = 0.0
+            else:
+                data_notas[k, i] = float(value[0:2])
+                data_interes[k, i] = float(value[2])
+                data_gustado[k, i] = float(value[3])
+                data_suspensos[k, i] = float(value[4])*(-1)
             i += 1
 
         results = firebase.get('users/' + key + '/tercerocuarto','')
@@ -165,6 +174,7 @@ def algoritmo(user):
 
 
     joblib.dump(classifier, 'classifier.joblib')
+
 
 
 

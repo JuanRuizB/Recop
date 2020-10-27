@@ -50,7 +50,7 @@ const StyledCard = styled(Card)`
   margin-bottom: 10px;
   min-height: 150px;
   width: 900px;
-  height: 570px;
+  height: 500px;
 `
 
 
@@ -66,6 +66,9 @@ const RegisterCont = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     var email = user.email;
     var userId = user.uid;
+    firebase.database().ref('users/' + userId ).set({
+      email: email,
+    })
   }
 
   const [name, setName] = useState('');

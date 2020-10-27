@@ -13,14 +13,12 @@ interface AsignaturaProps {
 
 const Asignatura = ({ id, nombre, curso }: AsignaturaProps) => {
 
-    // const firebase = useFirebaseApp();
     const [bool, setBool] = useState(false);
     const [a1, setA1] = useState(''); 
     const [a2, setA2] = useState('');
     const [a3, setA3] = useState('');
     const [a4, setA4] = useState('');
     
-//Aqui tengo que inicializar los valores de la base de datos
     
 
     var user  = useUser<firebase.User>();

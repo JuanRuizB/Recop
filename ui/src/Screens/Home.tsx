@@ -4,10 +4,9 @@ import styled from 'styled-components'
 import routes from '../routes/routes'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import uca from '../assets/img/uca(1).svg'
-import { useLocation } from 'react-router-dom'
 import { Link as RouterLink } from 'react-router-dom'
 import Button from '@material-ui/core/Button';
-import {useFirebaseApp, useUser} from 'reactfire'
+import {useUser} from 'reactfire'
 
 const StyledCard = styled(Card)`
 
@@ -87,11 +86,7 @@ const Home = () => {
       
     </Grid>
   );
-  return (
-    <>
-      
-    </>
-  )
+
 }
 
 export default Home

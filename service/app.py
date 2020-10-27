@@ -6,7 +6,12 @@ import numpy as np
 import sys
 from model_generator import algoritmo
 from flask_cors import CORS
+import firebase_admin
+from firebase_admin import auth
 
+# source bin/activate
+# export GOOGLE_APPLICATION_CREDENTIALS="/mnt/c/Users/wen/Desktop/TFG/service-account-file.json"
+# FLASK_APP=app.py flask run
 
 
 flask_app = Flask(__name__)
@@ -19,10 +24,22 @@ app = Api(app = flask_app,
 name_space = app.namespace('recommendation', description='Recommendation APIs')
 
 model = app.model('Recommendation params', 
-					{'User': fields.Float(required = True, 
+					{'User': fields.String(required = True, 
 				  							   description="Usuario", 
     					  				 	   help="id del usuario")})
 
+model_email = app.model('Modify params', 
+					{'User': fields.String(required = True, 
+				  							   description="Usuario", 
+    					  				 	   help="id del usuario"),
+					'Email': fields.String(required = True, 
+				  							   description="Email", 
+    					  				 	   help="email del usuario"),
+					'Password': fields.String(required = True, 
+				  							   description="Password", 
+    					  				 	   help="password del usuario")})
+
+default_app = firebase_admin.initialize_app()
 
 classifier = joblib.load('classifier.joblib')
 
@@ -36,23 +53,64 @@ class MainClass(Resource):
 		response.headers.add('Access-Control-Allow-Methods', "*")
 		return response
 
-			
-	def get(self):
+	@app.expect(model)
+	def put(self):
 		
 		try: 
-			# userKey = request.json
-			# algoritmo(str(userKey))
+			userKey = request.json
+			data = [val for val in userKey.values()]
+			print(data)
+			auth.delete_user(data[0])
 			response = jsonify({
 				"statusCode": 200,
-				"status": "Recommendation made",
-				"result":  classifier
+				"status": "Elimination made",
+				"result": "Usuario eliminado con exito"
 				})
 			response.headers.add('Access-Control-Allow-Origin', '*')
 			return response
 		except Exception as error:
 			return jsonify({
 				"statusCode": 500,
-				"status": "Could not make prediction",
+				"status": "Could not make the action",
+				"error": str(error)
+			})
+
+	@app.expect(model_email)
+	def patch(self):
+		
+		try: 
+			userKey = request.json
+			data = [val for val in userKey.values()]
+			
+			if(data[1] != ''):
+				auth.update_user(
+					data[0],
+					email=data[1],
+				)
+				response = jsonify({
+					"statusCode": 200,
+					"status": "Modification made",
+					"result": "Email actualizado con exito"
+				})
+			if(data[2] != ''):
+				auth.update_user(
+					data[0],
+					password=data[2],
+				)
+				response = jsonify({
+					"statusCode": 200,
+					"status": "Recommendation made",
+					"result": "Contraseña actualizada con exito"
+				})
+
+			
+			
+			response.headers.add('Access-Control-Allow-Origin', '*')
+			return response
+		except Exception as error:
+			return jsonify({
+				"statusCode": 500,
+				"status": "Could not make the action",
 				"error": str(error)
 			})
 
@@ -61,7 +119,8 @@ class MainClass(Resource):
 		
 		try: 
 			userKey = request.json
-			algoritmo(str(userKey))
+			data = [val for val in userKey.values()]
+			algoritmo(str(data[0]))
 			response = jsonify({
 				"statusCode": 200,
 				"status": "Recommendation made",

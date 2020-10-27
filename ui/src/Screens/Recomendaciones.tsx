@@ -11,7 +11,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Button from '@material-ui/core/Button';
 import { Link as RouterLink } from 'react-router-dom'
 import routes from '../routes/routes'
-import { postData } from '../services/api';
+import { getData } from '../services/api';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -68,6 +70,10 @@ const useStyles = makeStyles((theme) => ({
     color: 'black',
     padding: '0 30px',
     margin: theme.spacing(3, 1, 2),
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   },
 
 
@@ -197,7 +203,7 @@ const Recomendaciones = () => {
   const handlePredictClick = () => {
     setIsLoading(true);   
     ;(async () => {
-      const newData = await postData(userKey.uid)
+      const newData = await getData(userKey.uid)
       setData(newData.result)
       setIsLoading(false);
       
@@ -213,9 +219,9 @@ const Recomendaciones = () => {
        snapshot.child("5").val(), snapshot.child("6").val(),
        snapshot.child("7").val(), snapshot.child("8").val(),
        snapshot.child("9").val(), snapshot.child("10").val()]
-      //  if(!(cadena[0] == "")){
+      
         setData(cadena)
-      //  }
+
        
        
        setBool(true);
@@ -272,6 +278,10 @@ const Recomendaciones = () => {
         </Card>
       </Grid>
     }
+
+      <Backdrop className={classes.backdrop} open={isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
 
     {!(data[0] == "") && 
       <Grid>

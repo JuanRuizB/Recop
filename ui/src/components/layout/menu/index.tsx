@@ -1,5 +1,5 @@
-import { Grid, CssBaseline, makeStyles, Typography } from '@material-ui/core'
-import React from 'react'
+import { Grid, CssBaseline, makeStyles } from '@material-ui/core'
+import React, { useState } from 'react'
 import routes from '../../../routes/routes'
 import Logo from '../../logo'
 import SignIn from '../../login'
@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import 'firebase/auth'
 import {useFirebaseApp, useUser} from 'reactfire'
 import { Link as RouterLink } from 'react-router-dom'
+import firebase from 'firebase'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,13 +46,26 @@ const MyMenu = () => {
   const classes = useStyles();
   const firebase = useFirebaseApp();
   var user  = useUser<firebase.User>();
+  const [admin, setAdmin] = useState(false);
 
 
   const logout = async () => {
     await firebase.auth().signOut();
+    setAdmin(false);
 }
 
-
+    firebase.database().ref('admin/').once('value').then(function(snapshot)
+        {
+          snapshot.forEach(function(childSnapshot) {
+            console.log(childSnapshot.val())
+            if(user != null){
+              if(user.email === childSnapshot.val().email){
+                setAdmin(true);
+              }
+            }
+            });
+        
+        });
 
   return (
     <>
@@ -69,17 +83,48 @@ const MyMenu = () => {
           
           <Grid item xs={8}>
 
-            {!user &&
+            {(!user && !admin) &&
             
             <Grid container direction="row-reverse" justify="space-around" alignItems="center" spacing={3}>
             <SignIn/>
             </Grid>
             
             }
+
+            {admin &&
+              <Grid container direction="row"  justify="space-around" alignItems="center">
+              <Grid item >
+              <Button
+                  variant="contained"
+                  className={classes.buttBLUE}
+                  to={routes.administrador.path}
+                  component={RouterLink}
+                >
+                   Administrar usuarios
+  
+                </Button>
+            </Grid>
+            
+                
+            <Grid item >
+                <Button
+                  type="submit"
+                  variant="contained"
+                  className={classes.buttRED}
+                  onClick={logout}
+                  component={RouterLink} to={routes.baseUrl.path}
+                >
+                   Cerrar Sesion
+  
+                </Button>
+                </Grid>
+              </Grid>
+            
+            }
             
 
             
-            {user &&
+            {(user && !admin) &&
               <Grid container direction="row"  justify="space-around" alignItems="center">
             <Grid item >
             <Button
@@ -115,7 +160,7 @@ const MyMenu = () => {
               </Button>
           </Grid>
               
-          <Grid item spacing={0} >
+          <Grid item >
               <Button
                 type="submit"
                 variant="contained"

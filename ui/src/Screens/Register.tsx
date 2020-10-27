@@ -7,7 +7,6 @@ import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Button from '@material-ui/core/Button';
-
 import { Link as RouterLink } from 'react-router-dom'
 import routes from '../routes/routes'
 import 'firebase/auth'
@@ -26,13 +25,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
   errorM: {
-    background: theme.palette.primary.main,
-    border: 0,
-    borderRadius: 3,
-    boxShadow: '0 3px 5px 2px #bdbdbd',
-    color: 'white',
-    padding: '0 30px',
-    margin: theme.spacing(3, 0, 2),
+    color: theme.palette.primary.dark,
   },
   buttRED: {
     background: theme.palette.primary.main,

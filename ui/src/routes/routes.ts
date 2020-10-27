@@ -10,6 +10,7 @@ import Perfil from '../Screens/Perfil'
 import Segundo from '../Screens/Segundo'
 import Tercerocuarto from '../Screens/Tercerocuarto'
 import Recomendaciones from '../Screens/Recomendaciones'
+import Administrador from '../Screens/Administrador'
 
 export interface RouteType {
   component: React.ReactNode
@@ -30,6 +31,7 @@ interface RoutesType {
   tercerocuarto: RouteType
   perfil: RouteType
   recomendaciones: RouteType
+  administrador: RouteType
 }
 
 const routes: RoutesType = {
@@ -92,6 +94,11 @@ const routes: RoutesType = {
     component: Recomendaciones,
     name: 'Recomendaciones',
     path: '/recomendaciones',
+  },
+  administrador:{
+    component: Administrador,
+    name: 'Administrador',
+    path: '/administrador',
   },
 
 }

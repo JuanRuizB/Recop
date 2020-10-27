@@ -1,23 +1,19 @@
 import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
-
 import Typography from '@material-ui/core/Typography';
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import ForgotPass from './Forgot_Pass'
 import { Link as RouterLink } from 'react-router-dom'
-import { useLocation } from 'react-router-dom'
 import 'firebase/auth'
-import {useFirebaseApp, useUser} from 'reactfire'
+import {useFirebaseApp} from 'reactfire'
 import routes from '../../routes/routes'
 import cancel from '../../assets/img/cancel.svg'
 
@@ -43,14 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
   },
   errorM: {
-    background: theme.palette.secondary.main,
-    border: 0,
-    borderRadius: 3,
-    height: 30,
-    boxShadow: '0 3px 5px 2px #bdbdbd',
-    color: 'white',
-    padding: '0 30px',
-    margin: theme.spacing(3, 0, 2),
+    color: theme.palette.primary.dark,
   },
 }));
 
@@ -59,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 function SignIn() {
   const [openL, SetOpenL] = useState(false);
   const classes = useStyles();
+  const [errors, setErrors] = useState('')
   const [openD, SetOpenD] = useState(false);
 
   const handleChangeD = () => {
@@ -79,17 +69,30 @@ function SignIn() {
       
   
       const login = async () =>{
-        try{
-          await firebase.auth().signInWithEmailAndPassword(email,password);
-        }catch{
-            handleChangeD()
-        }
+        
+        var promise = await firebase.auth().signInWithEmailAndPassword(email,password).catch(function(error){
+          var errorCode = error.code;
+          if(errorCode === 'auth/invalid-email') {
+            setErrors("Dirección de correo electrónico incorrecta.");
+            handleChangeD();
+          }
+
+          if(errorCode === 'auth/user-not-found') {
+            setErrors("No existe cuenta con este email");
+            handleChangeD();
+          }
+
+          if(errorCode === 'auth/wrong-password') {
+            setErrors("Contraseña incorrecta");
+            handleChangeD();
+          }
+
+        });
       }
-  
+
+
   return (
     
-    
-
 
 <>
 
@@ -109,7 +112,7 @@ function SignIn() {
                     <Grid container justify="center" direction="column" alignItems="center">
                   <img src={cancel} alt="Sidebar media" width='80%'/>
                     <Typography variant="h5" color="error" className={classes.errorM}>
-                      Email y/o contraseña erroneos
+                    {errors}
                     </Typography>
                     </Grid>
                     <Button 
@@ -177,7 +180,7 @@ function SignIn() {
         <ForgotPass/>
       </Grid>
       <Grid item xs={5}>
-        <Link component={RouterLink} to={routes.register.path} onClick={handleChange} variant="body2">
+        <Link component={RouterLink} to={routes.registerCont.path} onClick={handleChange} variant="body2">
           {"¿No tienes una cuenta? Registrate"}
         </Link>
       </Grid>
@@ -202,10 +205,6 @@ function SignIn() {
       
   );
 }
-
-
-
-
 
 
 

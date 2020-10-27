@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import MyMenu from './menu'
 import Footer from './footer'
 import { makeStyles } from '@material-ui/core/styles'
-import { fade } from '@material-ui/core/styles/colorManipulator'
 
 
 interface LayoutProps {
@@ -13,12 +12,6 @@ interface LayoutProps {
 const Container = styled(Grid)`
   background-color: ${({ theme }) => theme.palette.primary.light};
   flex: 1;
-  
-`
-const ChildrenContainer = styled(Grid)`
-  flex: 1;
-
-  padding: 5px 15px 5px 15px;
   
 `
 
