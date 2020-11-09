@@ -83,7 +83,28 @@ const RegisterCont = () => {
         email: email,
         grado: grado,
         universidad: universidad,
-        primero:  {21714006: '',
+        
+
+      })
+
+      firebase.database().ref('recomendaciones/' + userId ).set({
+        especialidadRec: '',
+        asigRecom: {
+          1: '',
+          2: '', 
+          3: '',
+          4: '',
+          5: '',
+          6: '',
+          7: '',
+          8: '',
+          9: '',
+          10: '',
+        }
+      })
+
+      firebase.database().ref('asignaturas/' + userId ).set({
+      primero:  {21714006: '',
           21714005: '',
           21714010: '',
           21714004: '',
@@ -163,19 +184,6 @@ const RegisterCont = () => {
           21714081: '',
           21714082: '',
         },
-        recomendaciones: {
-          1: '',
-          2: '', 
-          3: '',
-          4: '',
-          5: '',
-          6: '',
-          7: '',
-          8: '',
-          9: '',
-          10: '',
-        }
-
       })
     }
 
@@ -308,7 +316,7 @@ const RegisterCont = () => {
       className={classes.buttBLUE}
       disabled={confirm()}
       onClick={writeUserData}
-      component={RouterLink} to={routes.primero.path}
+      component={RouterLink} to={routes.data.path}
     >
           Continuar
 

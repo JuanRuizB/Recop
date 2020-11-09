@@ -168,7 +168,7 @@ const MyMenu = () => {
                 onClick={logout}
                 component={RouterLink} to={routes.baseUrl.path}
               >
-                 Cerrar Sesion
+                 Cerrar Sesión
 
               </Button>
               </Grid>

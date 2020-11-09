@@ -319,7 +319,7 @@ const Perfil = () => {
                     className={classes.buttBLUE}
                     onClick={writeUserData}
                     >
-                      Continuar
+                      Guardar
                     </Button>
                   </DialogContent>
                 </Dialog>

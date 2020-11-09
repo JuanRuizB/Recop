@@ -129,7 +129,7 @@ function ForgotPass() {
       className={classes.submit}
       onClick={forgot}
     >
-      enviar
+      Enviar
     </Button>
       
     </DialogActions>

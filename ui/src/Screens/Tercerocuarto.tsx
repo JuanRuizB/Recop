@@ -263,7 +263,7 @@ const Tercerocuarto = () => {
       variant="contained"
       color="primary"
       className={classes.submit}
-      component={RouterLink} to={routes.baseUrl.path}
+      component={RouterLink} to={routes.recomendaciones.path}
     >
           Continuar
 

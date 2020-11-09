@@ -75,6 +75,9 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
   },
+  letras: {
+    color: theme.palette.primary.dark,
+  }
 
 
 }));
@@ -101,6 +104,7 @@ const Recomendaciones = () => {
   "21714028",
   "21714024",
   "21714025",
+
   "21714035",
   "21714036",
   "21714039",
@@ -109,6 +113,7 @@ const Recomendaciones = () => {
   "21714032",
   "21714034",
   "21714033",
+
   "21714040",
   "21714047",
   "21714043",
@@ -117,6 +122,7 @@ const Recomendaciones = () => {
   "21714046",
   "21714042",
   "21714045",
+
   "21714048",
   "21714053",
   "21714049",
@@ -125,6 +131,7 @@ const Recomendaciones = () => {
   "21714050",
   "21714054",
   "21714055",
+
   "21714056",
   "21714058",
   "21714080",
@@ -133,6 +140,7 @@ const Recomendaciones = () => {
   "21714062",
   "21714063",
   "21714085",
+
   "21714075",
   "21714076",
   "21714077",
@@ -195,8 +203,17 @@ const Recomendaciones = () => {
   "Métodos Numéricos para la Ingeniería Informática",
   "Técnicas Avanzadas de Optimización"]);
 
+  const [especialidadNom, setEspecialidadNom] = useState<string[]>(["Computacion",
+  "Ingeniería de Computadores",
+  "Ingeniería del Software",
+  "Sistemas de Información",
+  "Tecnologías de la Información"])
+
   const [isLoading, setIsLoading] = useState(false);
   const [bool, setBool] = useState(false);
+  const [especialidad, setEspecialidad] = useState("");
+  const [espCont, setEspCont] = useState<number[]>([0, 0 ,0 ,0 ,0])
+
   const firebase = useFirebaseApp();
   var userKey = useUser<firebase.User>();
     
@@ -212,7 +229,16 @@ const Recomendaciones = () => {
     
   }
   if(bool === false){
-    firebase.database().ref('users/' + userKey.uid + '/recomendaciones/').once('value').then(function(snapshot)
+    firebase.database().ref('recomendaciones/' + userKey.uid + '/especialidadRec/').once('value').then(function(snapshot)
+     {
+       if(!(snapshot.val() == null)){
+       var cadena = snapshot.val();
+        
+       setEspecialidad(cadena);
+       }
+       
+    });
+    firebase.database().ref('recomendaciones/' + userKey.uid + '/asigRecom/').once('value').then(function(snapshot)
      {
        var cadena = [snapshot.child("1").val(), snapshot.child("2").val() ,
        snapshot.child("3").val(), snapshot.child("4").val(), 
@@ -229,7 +255,7 @@ const Recomendaciones = () => {
   }
 
   if(!(data[0] == "")){
-    firebase.database().ref('users/' + userKey.uid + '/recomendaciones').set({
+    firebase.database().ref('recomendaciones/' + userKey.uid + '/asigRecom').update({
       1: (data[0]),
       2: (data[1]),
       3: (data[2]),
@@ -243,11 +269,56 @@ const Recomendaciones = () => {
     })
   }
 
+  if(!(especialidad == "")){
+    firebase.database().ref('users/' + userKey.uid).update({
+      especialidadRec: especialidad,
+    })
+  }
+
   const asigNom = (num: number) => {
     var index = asignaturasCod.indexOf(data[num]);
     return asignaturasNom[index]
   }
 
+
+
+  
+  const handlePredictClickEspecialidad = () => {
+    setIsLoading(true);  
+    
+    ;(async () => {
+      const newData = await getData(userKey.uid)
+      setData(newData.result)
+      
+    data.forEach(function(value){
+      var aux = asignaturasCod.indexOf(value);
+
+      if(aux < 8){
+        espCont[0] += 1
+      }
+
+      if(aux > 7 && aux < 16){
+        espCont[1] += 1
+      }
+
+      if(aux > 15 && aux < 24){
+        espCont[2] += 1
+      }
+
+      if(aux > 23 && aux < 32){
+        espCont[3] += 1
+      }
+
+      if(aux > 31 && aux < 40){
+        espCont[4] += 1
+      }
+    })
+    var maximo = Math.max(espCont[0], espCont[1], espCont[2], espCont[3], espCont[4])
+    
+    setEspecialidad(especialidadNom[espCont.indexOf(maximo)]);
+    setIsLoading(false);
+    })()
+  }
   
   return (
     <Grid container component="main"  >
@@ -283,8 +354,10 @@ const Recomendaciones = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
 
+
     {!(data[0] == "") && 
       <Grid>
+    
         <Card className={classes.gold}>
           <CardContent>
             <Typography>
@@ -367,6 +440,18 @@ const Recomendaciones = () => {
       </Grid>
 
      }
+
+{!(especialidad == "") &&
+      <Grid item >
+        <Card >
+          <CardContent>
+            <Typography variant="h4" align="center" className={classes.letras}>
+              {"La especialidad que más se ajusta a tu perfil es " + especialidad}
+            </Typography>
+            </CardContent>
+            </Card>
+            </Grid >
+      }
           
 
     
@@ -394,8 +479,22 @@ const Recomendaciones = () => {
       color="primary"
       disabled={isLoading}
       className={classes.submit}
+      onClick={handlePredictClickEspecialidad}>
+    { isLoading ? 'Haciendo algunos calculos...' : 'Recomendar especialidad' }
+
+    </Button>
+    </Grid>
+
+    <Grid item xs>
+    <Button
+      type="submit"
+      fullWidth
+      variant="contained"
+      color="primary"
+      disabled={isLoading}
+      className={classes.submit}
       onClick={handlePredictClick}>
-    { isLoading ? 'Haciendo algunos calculos...' : 'Recomendar' }
+    { isLoading ? 'Haciendo algunos calculos...' : 'Recomendar optativas' }
 
     </Button>
     </Grid>

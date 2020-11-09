@@ -24,7 +24,7 @@ const Asignatura = ({ id, nombre, curso }: AsignaturaProps) => {
     var user  = useUser<firebase.User>();
     
     if(bool === false){
-     firebase.database().ref('users/' + user.uid + '/' + curso + '/' + id).once('value').then(function(snapshot)
+     firebase.database().ref('asignaturas/' + user.uid + '/' + curso + '/' + id).once('value').then(function(snapshot)
      {
         var cadena = snapshot.val() || '';
         setA1(cadena.charAt((0)) + cadena.charAt((1)))
@@ -36,7 +36,7 @@ const Asignatura = ({ id, nombre, curso }: AsignaturaProps) => {
     }
            
      if(bool){
-        firebase.database().ref('users/' + user.uid + '/' + curso + '/' + id).set(
+        firebase.database().ref('asignaturas/' + user.uid + '/' + curso + '/' + id).set(
             (a1 + a2 + a3 + a4)
         )
         
@@ -84,7 +84,7 @@ const Asignatura = ({ id, nombre, curso }: AsignaturaProps) => {
                     </RadioGroup>
             
                     <RadioGroup value={a3} onChange={(ev) => setA3(ev.target.value)}>
-                        <FormLabel component="legend">Te ha gustado</FormLabel>
+                        <FormLabel component="legend">Opinión (cuanto te ha gustado)</FormLabel>
                         <Grid container direction="row">
                             <FormControlLabel value="0" control={<Radio />} label="0" />
                             <FormControlLabel value="1" control={<Radio />} label="1" />
@@ -104,7 +104,7 @@ const Asignatura = ({ id, nombre, curso }: AsignaturaProps) => {
                             <FormControlLabel value="2" control={<Radio />} label="2" />
                             <FormControlLabel value="3" control={<Radio />} label="3" />
                             <FormControlLabel value="4" control={<Radio />} label="4" />
-                            <FormControlLabel value="5" control={<Radio />} label="5" />
+                            <FormControlLabel value="5" control={<Radio />} label="+5" />
             
                         </Grid>
                     </RadioGroup>
