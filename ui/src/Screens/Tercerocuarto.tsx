@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled from 'styled-components'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -14,6 +14,9 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {useFirebaseApp, useUser} from 'reactfire'
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -32,7 +35,11 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     width: '100%',
 
-  }
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 const StyledCard = styled(Card)`
@@ -46,6 +53,92 @@ height: 580px;
 
 const Tercerocuarto = () => {
   const classes = useStyles();
+  const [bool2, setBool2] = useState(true);
+  const [bool, setBool] = useState(true);
+
+  const [asignaturasCod, setAsignaturasCod] = useState<string[]>([""]);
+  
+  const [asignaturasNom, setAsignaturasNom] = useState<string[]>([""]);
+
+  const [asignaturasCodTercero, setAsignaturasCodTercero] = useState<string[]>([""]);
+  
+  const [asignaturasNomTercero, setAsignaturasNomTercero] = useState<string[]>([""]);
+
+  const firebase = useFirebaseApp();
+  var userKey = useUser<firebase.User>();
+
+  if(bool2 === true){
+
+    setBool2(false)
+    
+    firebase.database().ref('users/' + userKey.uid + '/grado').once('value').then(function(snapshot)
+    {
+        var grado = snapshot.val() || '';
+
+
+        firebase.database().ref('users/' + userKey.uid + '/universidad').once('value').then(function(snapshot)
+    {
+        var universidad = snapshot.val() || '';
+
+
+        firebase.database().ref('asignaturas/'+ universidad + '/' + grado + '/codigos/').once('value').then(function(snapshot)
+      {
+       var cont = 0;
+       var aux1 = [""]
+       var aux2 = [""]
+
+       
+       
+        snapshot.forEach(function(datasnapshot){
+          
+          if(datasnapshot.key != null){
+            
+            aux1[cont] = datasnapshot.key
+            aux2[cont] = datasnapshot.val()
+            cont += 1
+            
+          }
+        })
+
+        setAsignaturasCod(aux1)
+        setAsignaturasNom(aux2) 
+
+        firebase.database().ref('asignaturas/'+ universidad + '/' + grado + '/codigosTercero/').once('value').then(function(snapshot)
+      {
+       var cont = 0;
+       var aux1 = [""]
+       var aux2 = [""]
+
+       
+       
+        snapshot.forEach(function(datasnapshot){
+          
+          if(datasnapshot.key != null){
+            
+            aux1[cont] = datasnapshot.key
+            aux2[cont] = datasnapshot.val()
+            cont += 1
+            
+          }
+        })
+
+        setAsignaturasCodTercero(aux1)
+        setAsignaturasNomTercero(aux2) 
+        setBool(false)
+    });
+        
+    });
+
+    
+    
+    });
+
+    });
+
+
+    
+}
+
 
     
 
@@ -66,181 +159,207 @@ const Tercerocuarto = () => {
     <LockOutlinedIcon />
     </Avatar>
   </Grid>   
+
+  <Grid item >
+  <Typography  variant="h6" color="textSecondary" component="p">
+              Por favor rellena todos los datos de las asignaturas que hayas cursado, 
+              
+              </Typography>
+              <Typography  variant="h6" color="textSecondary" component="p">
+              si hay algunas que no hayas cursado, pon los datos a 0 excepto las de las especialidades
+              </Typography>
+              <Typography  variant="h6" color="textSecondary" component="p">
+              que si puedes dejarlas sin contestar.
+              </Typography>
+              </Grid>
+
+      {(bool === true) &&
+      <>
+<Backdrop className={classes.backdrop} open={bool}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
+      </>
+      }
        
-       
-    
-      
-      <Asignatura id={"21714018"} nombre={"Proyectos Informaticos"} curso={"tercerocuarto"}/>
-      <Asignatura id={"21714020"} nombre={"Programacion Concurrente y de Tiempo Real"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714015"} nombre={"Diseño de Algoritmos"} curso={"tercerocuarto"} />
-
-      
-      <Accordion className={classes.accordion}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-          
-        >
-          <Typography component="h1" variant="h5">
-            Computacion
-            </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-        <Grid container justify="center" direction="column" alignItems="center" >
-        <Asignatura id={"21714031"} nombre={"Sistemas Inteligentes"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714030"} nombre={"Reconocimiento de Patrones"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714027"} nombre={"Teoría de Autómatas y Lenguajes Formales"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714026"} nombre={"Procesadores de Lenguajes"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714029"} nombre={"Percepción"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714028"} nombre={"Aprendizaje Computacional"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714024"} nombre={"Complejidad Computacional"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714025"} nombre={"Modelos de Computación"} curso={"tercerocuarto"} />
-      
-      </Grid>
-
-        </AccordionDetails>
-      </Accordion>
-
-      <Accordion className={classes.accordion}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-          
-        >
-          <Typography component="h1" variant="h5">
-          Ingeniería de Computadores
-            </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-        <Grid container justify="center" direction="column" alignItems="center" >
-        <Asignatura id={"21714035"} nombre={"Diseño Basado en Microprocesadores"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714036"} nombre={"Diseño de Computadores Empotrados"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714039"} nombre={"Diseño de Redes de Computadores"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714037"} nombre={"Técnicas de Diseño de Computadores "} curso={"tercerocuarto"} />
-      <Asignatura id={"21714038"} nombre={"Administración y Seguridad de Redes de Computadores"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714032"} nombre={"Arquitectura de Computadores Paralelos y Distribuidos"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714034"} nombre={"Diseño Avanzado de Arquitectura de Computadores"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714033"} nombre={"Programación Paralela y Distribuida"} curso={"tercerocuarto"} />
-      
-      </Grid>
-
-        </AccordionDetails>
-      </Accordion>
+       { (bool === false) && 
+  <><Asignatura id={asignaturasCodTercero[0]} nombre={asignaturasNomTercero[0]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCodTercero[1]} nombre={asignaturasNomTercero[1]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCodTercero[2]} nombre={asignaturasNomTercero[2]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCodTercero[3]} nombre={asignaturasNomTercero[3]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCodTercero[4]} nombre={asignaturasNomTercero[4]} curso={"tercerocuarto"} />
   
 
-      <Accordion className={classes.accordion}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-          
-        >
-          <Typography component="h1" variant="h5">
-          Ingeniería del Software
-            </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-        <Grid container justify="center" direction="column" alignItems="center" >
-        <Asignatura id={"21714040"} nombre={"Diseño de Sistemas Software"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714047"} nombre={"Implementación e Implantación de Sistemas Software"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714043"} nombre={"Calidad del Software"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714044"} nombre={"Dirección y Gestión de Proyectos Software"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714041"} nombre={"Ingeniería de Requisitos"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714046"} nombre={"Evolución del Software"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714042"} nombre={"Verificación y Validación de Software"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714045"} nombre={"Metodologías y Procesos Software"} curso={"tercerocuarto"} />
+  
+  <Accordion className={classes.accordion}>
+    <AccordionSummary
+      expandIcon={<ExpandMoreIcon />}
+      aria-controls="panel1a-content"
+      id="panel1a-header"
       
+    >
+      <Typography component="h1" variant="h5">
+        Computacion
+        </Typography>
+    </AccordionSummary>
+    <AccordionDetails>
+    <Grid container justify="center" direction="column" alignItems="center" >
+    <Asignatura id={asignaturasCod[0]} nombre={asignaturasNom[0]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[1]} nombre={asignaturasNom[1]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[2]} nombre={asignaturasNom[2]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[3]} nombre={asignaturasNom[3]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[4]} nombre={asignaturasNom[4]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[5]} nombre={asignaturasNom[5]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[6]} nombre={asignaturasNom[6]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[7]} nombre={asignaturasNom[7]} curso={"tercerocuarto"} />
+  
+  </Grid>
+
+    </AccordionDetails>
+  </Accordion>
+
+  <Accordion className={classes.accordion}>
+    <AccordionSummary
+      expandIcon={<ExpandMoreIcon />}
+      aria-controls="panel1a-content"
+      id="panel1a-header"
+      
+    >
+      <Typography component="h1" variant="h5">
+      Ingeniería de Computadores
+        </Typography>
+    </AccordionSummary>
+    <AccordionDetails>
+    <Grid container justify="center" direction="column" alignItems="center" >
+    <Asignatura id={asignaturasCod[8]} nombre={asignaturasNom[8]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[9]} nombre={asignaturasNom[9]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[10]} nombre={asignaturasNom[10]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[11]} nombre={asignaturasNom[11]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[12]} nombre={asignaturasNom[12]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[13]} nombre={asignaturasNom[13]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[14]} nombre={asignaturasNom[14]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[15]} nombre={asignaturasNom[15]} curso={"tercerocuarto"} />
+  
+  </Grid>
+
+    </AccordionDetails>
+  </Accordion>
+
+
+  <Accordion className={classes.accordion}>
+    <AccordionSummary
+      expandIcon={<ExpandMoreIcon />}
+      aria-controls="panel1a-content"
+      id="panel1a-header"
+      
+    >
+      <Typography component="h1" variant="h5">
+      Ingeniería del Software
+        </Typography>
+    </AccordionSummary>
+    <AccordionDetails>
+    <Grid container justify="center" direction="column" alignItems="center" >
+    <Asignatura id={asignaturasCod[16]} nombre={asignaturasNom[16]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[17]} nombre={asignaturasNom[17]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[18]} nombre={asignaturasNom[18]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[19]} nombre={asignaturasNom[19]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[20]} nombre={asignaturasNom[20]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[21]} nombre={asignaturasNom[21]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[22]} nombre={asignaturasNom[22]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[23]} nombre={asignaturasNom[23]} curso={"tercerocuarto"} />
+  
+  </Grid>
+
+    </AccordionDetails>
+  </Accordion>
+
+  <Accordion className={classes.accordion}>
+    <AccordionSummary
+      expandIcon={<ExpandMoreIcon />}
+      aria-controls="panel1a-content"
+      id="panel1a-header"
+      
+    >
+      <Typography component="h1" variant="h5">
+      Sistemas de Información
+        </Typography>
+    </AccordionSummary>
+    <AccordionDetails>
+    <Grid container justify="center" direction="column" alignItems="center" >
+    <Asignatura id={asignaturasCod[24]} nombre={asignaturasNom[24]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[25]} nombre={asignaturasNom[25]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[26]} nombre={asignaturasNom[26]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[27]} nombre={asignaturasNom[27]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[28]} nombre={asignaturasNom[28]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[29]} nombre={asignaturasNom[29]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[30]} nombre={asignaturasNom[30]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[31]} nombre={asignaturasNom[31]} curso={"tercerocuarto"} />
+  
+  </Grid>
+
+    </AccordionDetails>
+  </Accordion>
+
+  <Accordion className={classes.accordion}>
+    <AccordionSummary
+      expandIcon={<ExpandMoreIcon />}
+      aria-controls="panel1a-content"
+      id="panel1a-header"
+      
+    >
+      <Typography component="h1" variant="h5">
+      Tecnologías de la Información
+        </Typography>
+    </AccordionSummary>
+    <AccordionDetails>
+    <Grid container justify="center" direction="column" alignItems="center" >
+    <Asignatura id={asignaturasCod[32]} nombre={asignaturasNom[32]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[33]} nombre={asignaturasNom[33]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[34]} nombre={asignaturasNom[34]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[35]} nombre={asignaturasNom[35]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[36]} nombre={asignaturasNom[36]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[37]} nombre={asignaturasNom[37]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[46]} nombre={asignaturasNom[46]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[43]} nombre={asignaturasNom[43]} curso={"tercerocuarto"} />
+  
+  </Grid>
+
+    </AccordionDetails>
+  </Accordion>
+
+
+  <Accordion className={classes.accordion}>
+    <AccordionSummary
+      expandIcon={<ExpandMoreIcon />}
+      aria-controls="panel1a-content"
+      id="panel1a-header"
+      
+    >
+      <Typography component="h1" variant="h5">
+      Optativas
+        </Typography>
+    </AccordionSummary>
+    <AccordionDetails>
+    <Grid container justify="center" direction="column" alignItems="center" >
+    <Asignatura id={asignaturasCod[38]} nombre={asignaturasNom[38]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[39]} nombre={asignaturasNom[39]} curso={"tercerocuarto"} />
+    <Asignatura id={asignaturasCod[40]} nombre={asignaturasNom[40]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[41]} nombre={asignaturasNom[41]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[42]} nombre={asignaturasNom[42]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[44]} nombre={asignaturasNom[44]} curso={"tercerocuarto"} />
+  <Asignatura id={asignaturasCod[45]} nombre={asignaturasNom[45]} curso={"tercerocuarto"} />
+  
+  
+  
+
+                      </Grid>
+
+                    </AccordionDetails>
+                  </Accordion></>
+      
+  }
       </Grid>
-
-        </AccordionDetails>
-      </Accordion>
-
-      <Accordion className={classes.accordion}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-          
-        >
-          <Typography component="h1" variant="h5">
-          Sistemas de Información
-            </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-        <Grid container justify="center" direction="column" alignItems="center" >
-        <Asignatura id={"21714048"} nombre={"Desarrollo de Sistemas Hipermedia"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714053"} nombre={"Administración de Bases de Datos"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714049"} nombre={"Programación en Internet"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714051"} nombre={"Ingeniería de Sistemas de Información"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714052"} nombre={"Sistemas de Información en la Empresa"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714050"} nombre={"Recuperación de la Información"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714054"} nombre={"Tecnologías Avanzadas de Bases de Datos"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714055"} nombre={"Tecnologías de Inteligencia de Negocio"} curso={"tercerocuarto"} />
-      
-      </Grid>
-
-        </AccordionDetails>
-      </Accordion>
-
-      <Accordion className={classes.accordion}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-          
-        >
-          <Typography component="h1" variant="h5">
-          Tecnologías de la Información
-            </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-        <Grid container justify="center" direction="column" alignItems="center" >
-        <Asignatura id={"21714056"} nombre={"Administración de Servidores"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714058"} nombre={"Calidad de los Sistemas Informáticos"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714080"} nombre={"Interacción Persona-Ordenador"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714061"} nombre={"Ingeniería Web"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714057"} nombre={"Interconexión de Redes"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714063"} nombre={"Programación Web"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714085"} nombre={"Virtualización de Sistemas"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714059"} nombre={"Seguridad en los Sistemas Informáticos"} curso={"tercerocuarto"} />
-      
-      </Grid>
-
-        </AccordionDetails>
-      </Accordion>
-
-
-      <Accordion className={classes.accordion}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-          
-        >
-          <Typography component="h1" variant="h5">
-          Optativas
-            </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-        <Grid container justify="center" direction="column" alignItems="center" >
-        <Asignatura id={"21714075"} nombre={"Ampliación de Lógica Matemática"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714076"} nombre={"Control Estadístico de Calidad y Fiabilidad"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714077"} nombre={"Control por Computador"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714078"} nombre={"Diseño de Videojuegos"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714079"} nombre={"Inglés Técnico"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714081"} nombre={"Métodos Numéricos para la Ingeniería Informática"} curso={"tercerocuarto"} />
-      <Asignatura id={"21714082"} nombre={"Técnicas Avanzadas de Optimización"} curso={"tercerocuarto"} />
-      
-      
-      </Grid>
-
-        </AccordionDetails>
-      </Accordion>
-      
-      
-      </Grid>
+       
      <Grid container direction='row' justify="space-between" alignItems="center">     
     <Grid item xs>
     <Button
@@ -281,3 +400,4 @@ const Tercerocuarto = () => {
 }
 
 export default Tercerocuarto
+

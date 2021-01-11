@@ -9,9 +9,10 @@ import Button from '@material-ui/core/Button';
 import {useUser} from 'reactfire'
 
 const StyledCard = styled(Card)`
-
-  width: 800px;
-  height: 470px;
+margin-top: 10px;
+  min-height: 150px;
+  width: 900px;
+  height: 520px;
 `
 
 

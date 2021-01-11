@@ -2,7 +2,6 @@ import { Grid, CssBaseline} from '@material-ui/core'
 import React from 'react'
 import styled from 'styled-components'
 import MyMenu from './menu'
-import Footer from './footer'
 import { makeStyles } from '@material-ui/core/styles'
 
 
@@ -18,7 +17,7 @@ const Container = styled(Grid)`
 const useStyles = makeStyles((theme) => ({
   
   image: {
-    backgroundImage: 'url(https://source.unsplash.com/random)',
+    backgroundImage: 'url(https://source.unsplash.com/random/1920x1080)',
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -44,13 +43,13 @@ const Layout = ({ children }: LayoutProps) => {
 
   
 
-        <Grid item >
+        <Grid item xs={10}>
           {children}
           </Grid>
         
 
 
-        <Footer />
+        {/* <Footer /> */}
 
 
     </Container>

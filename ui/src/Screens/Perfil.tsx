@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardContent, Typography, MenuItem, Dialog, DialogContent, Link } from '@material-ui/core'
+import { Card, CardContent, Typography, MenuItem, Dialog, DialogContent } from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -92,6 +92,7 @@ const Perfil = () => {
     const [openP, setOpenP] = useState(false);
     const [openX, setOpenX] = useState(false);
     const [correct, setCorrect] = useState('')
+    const [mensaje, setMensaje] = useState(false);
     
 
   const handleChangeD = () => {
@@ -146,7 +147,8 @@ const Perfil = () => {
 
               if(!(newEmail == null) && !(email === newEmail)){
                 user.updateEmail(newEmail).then(function() {
-                  
+
+                  setMensaje(true);
                   setCorrect("Cambios guardados correctamente");
                   handleChangeX();
                   handleChangeL();
@@ -174,6 +176,7 @@ const Perfil = () => {
 
                 if(!(newpassword === '')){
                   user.updatePassword(newpassword).then(function() {
+                    setMensaje(true);
                     setCorrect("Contraseña actualizada correctamente");
                     handleChangeX();
                     handleChangeP();
@@ -210,12 +213,21 @@ const Perfil = () => {
             });
         }
             
-          firebase.database().ref('users/' + user.uid ).update({
+        firebase.database().ref('users/' + user.uid ).update({
             nombre: name,
             curso: curso,
             grado: grado,
             universidad: universidad,
+          }).then(function(){
+            if(mensaje === false){
+              setCorrect("Cambios guardados correctamente");
+              handleChangeX();
+              handleChangeL();
+            }
+            setMensaje(false);
+            
           })
+
 
       }
 
@@ -284,7 +296,7 @@ const Perfil = () => {
                       fullWidth
                       type="password"
                       value={password}
-                      label="Password"
+                      label="Contraseña"
                       autoFocus
                       onChange={ (ev) => setPassword(ev.target.value) }
                       />

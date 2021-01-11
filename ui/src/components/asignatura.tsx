@@ -35,7 +35,7 @@ const Asignatura = ({ id, nombre, curso }: AsignaturaProps) => {
      });
     }
            
-     if(bool){
+     if( bool === true){
         firebase.database().ref('asignaturas/' + user.uid + '/' + curso + '/' + id).set(
             (a1 + a2 + a3 + a4)
         )

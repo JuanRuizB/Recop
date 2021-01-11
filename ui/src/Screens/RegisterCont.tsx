@@ -59,16 +59,14 @@ const RegisterCont = () => {
 
   var user = firebase.auth().currentUser;
 
-  
 
+
+  
   if((user != null)){
     // eslint-disable-next-line no-labels
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     var email = user.email;
     var userId = user.uid;
-    firebase.database().ref('users/' + userId ).set({
-      email: email,
-    })
   }
 
   const [name, setName] = useState('');
@@ -101,89 +99,6 @@ const RegisterCont = () => {
           9: '',
           10: '',
         }
-      })
-
-      firebase.database().ref('asignaturas/' + userId ).set({
-      primero:  {21714006: '',
-          21714005: '',
-          21714010: '',
-          21714004: '',
-          21714002: '',
-          21714009: '',
-          21714008: '',
-          21714001: '',
-          21714007: '',
-          21714003: '',},
-
-          segundo:  {21714023: '',
-          21714013: '',
-          21714019: '',
-          21714021: '',
-          21714017: '',
-          21714012: '',
-          21714011: '',
-          21714016: '',
-          21714014: '',
-          21714022: '',},
-
-          tercerocuarto:  {21714059: '',
-          21714018: '',
-          21714020: '',
-          21714015: '',
-        //Computacion
-          21714031: '',
-          21714030: '',
-          21714027: '',
-          21714026: '',
-          21714029: '',
-          21714028: '',
-          21714024: '',
-          21714025: '',
-        //Ingeniería de Computadores
-          21714035: '',
-          21714036: '',
-          21714039: '',
-          21714037: '',
-          21714038: '',
-          21714032: '',
-          21714034: '',
-          21714033: '',
-        //Ingeniería del Software
-          21714040: '',
-          21714047: '',
-          21714043: '',
-          21714044: '',
-          21714041: '',
-          21714046: '',
-          21714042: '',
-          21714045: '',
-        //Sistemas de Información
-          21714048: '',
-          21714053: '',
-          21714049: '',
-          21714051: '',
-          21714052: '',
-          21714050: '',
-          21714054: '',
-          21714055: '',
-        //Tecnologías de la Información
-          21714056: '',
-          21714058: '',
-          21714080: '',
-          21714061: '',
-          21714057: '',
-          21714062: '',
-          21714063: '',
-          21714085: '',
-        // Optativas
-          21714075: '',
-          21714076: '',
-          21714077: '',
-          21714078: '',
-          21714079: '',
-          21714081: '',
-          21714082: '',
-        },
       })
     }
 
@@ -252,6 +167,7 @@ const RegisterCont = () => {
       onChange={(ev) => setUniversidad(ev.target.value)}
     >
       <MenuItem key={"Universidad de Cádiz"} value={"Universidad de Cádiz"}> Universidad de Cádiz </MenuItem>
+      <MenuItem key={"Universidad de Sevilla"} value={"Universidad de Sevilla"}> Universidad de Sevilla </MenuItem>
       </TextField>
       <TextField
       variant="outlined"
@@ -267,6 +183,8 @@ const RegisterCont = () => {
       onChange={(ev) => setGrado(ev.target.value)}
     >
       <MenuItem key={"Grado en Ingeniería Informática"} value={"Grado en Ingeniería Informática"}> Grado en Ingeniería Informática </MenuItem>
+      <MenuItem key={"Grado en Ingeniería Industrial"} value={"Grado en Ingeniería Industrial"}> Grado en Ingeniería Industrial </MenuItem>
+      
       </TextField>
 
       <TextField

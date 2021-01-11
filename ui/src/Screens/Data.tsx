@@ -102,7 +102,7 @@ const Data = () => {
                 fullWidth
                 component={RouterLink} to={routes.tercerocuarto.path}
               >
-                 Tercero o Cuarto
+                 Tercero / Cuarto
 
               </Button>
               </Grid>

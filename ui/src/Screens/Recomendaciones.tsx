@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
-import firebase from 'firebase'
 import { Card, CardContent, Typography } from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar';
 import {useFirebaseApp, useUser} from 'reactfire'
@@ -86,152 +85,106 @@ const StyledCard = styled(Card)`
   
 margin-top: 10px;
 margin-bottom: 10px;
-min-height: 150px;
-width: 800px;
-height: 470px;
+
+  min-height: 150px;
+  width: 900px;
+  height: 580px;
   
 `
 
 
 const Recomendaciones = () => {
   const classes = useStyles();
-  const [data, setData] = useState<string[]>(["", "", "", "", "", "", "", "", "", "",]);
-  const [asignaturasCod, setAsignaturasCod] = useState<string[]>(["21714031",
-  "21714030",
-  "21714027",
-  "21714026",
-  "21714029",
-  "21714028",
-  "21714024",
-  "21714025",
+  const [data, setData] = useState<string[]>([""]);
 
-  "21714035",
-  "21714036",
-  "21714039",
-  "21714037",
-  "21714038",
-  "21714032",
-  "21714034",
-  "21714033",
 
-  "21714040",
-  "21714047",
-  "21714043",
-  "21714044",
-  "21714041",
-  "21714046",
-  "21714042",
-  "21714045",
 
-  "21714048",
-  "21714053",
-  "21714049",
-  "21714051",
-  "21714052",
-  "21714050",
-  "21714054",
-  "21714055",
 
-  "21714056",
-  "21714058",
-  "21714080",
-  "21714061",
-  "21714057",
-  "21714062",
-  "21714063",
-  "21714085",
+  const [asignaturasCod, setAsignaturasCod] = useState<string[]>([""]);
 
-  "21714075",
-  "21714076",
-  "21714077",
-  "21714078",
-  "21714079",
-  "21714081",
-  "21714082"]);
+  const [asignaturasNom, setAsignaturasNom] = useState<string[]>([""]);
 
-  const [asignaturasNom, setAsignaturasNom] = useState<string[]>([
-  "Sistemas Inteligentes",
-  "Reconocimiento de Patrones",
-  "Teoría de Autómatas y Lenguajes Formales",
-  "Procesadores de Lenguajes",
-  "Percepción",
-  "Aprendizaje Computacional",
-  "Complejidad Computacional",
-  "Modelos de Computación",
-
-  "Diseño Basado en Microprocesadores",
-  "Diseño de Computadores Empotrados",
-  "Diseño de Redes de Computadores",
-  "Técnicas de Diseño de Computadores",
-  "Administración y Seguridad de Redes de Computadores",
-  "Arquitectura de Computadores Paralelos y Distribuidos",
-  "Diseño Avanzado de Arquitectura de Computadores",
-  "Programación Paralela y Distribuida",
-
-  "Diseño de Sistemas Software",
-  "Implementación e Implantación de Sistemas Software",
-  "Calidad del Software",
-  "Dirección y Gestión de Proyectos Software",
-  "Ingeniería de Requisitos",
-  "Evolución del Software",
-  "Verificación y Validación de Software",
-  "Metodologías y Procesos Software",
-
-  "Desarrollo de Sistemas Hipermedia",
-  "Administración de Bases de Datos",
-  "Programación en Internet",
-  "Ingeniería de Sistemas de Información",
-  "Sistemas de Información en la Empresa",
-  "Recuperación de la Información",
-  "Tecnologías Avanzadas de Bases de Datos",
-  "Tecnologías de Inteligencia de Negocio",
-
-  "Administración de Servidores",
-  "Calidad de los Sistemas Informáticos",
-  "Interacción Persona-Ordenador",
-  "Ingeniería Web",
-  "Interconexión de Redes",
-  "Internet y Negocio Electrónico",
-  "Programación Web",
-  "Virtualización de Sistemas",
-
-  "Ampliación de Lógica Matemática",
-  "Control Estadístico de Calidad y Fiabilidad",
-  "Control por Computador",
-  "Diseño de Videojuegos ",
-  "Inglés Técnico",
-  "Métodos Numéricos para la Ingeniería Informática",
-  "Técnicas Avanzadas de Optimización"]);
-
-  const [especialidadNom, setEspecialidadNom] = useState<string[]>(["Computacion",
-  "Ingeniería de Computadores",
-  "Ingeniería del Software",
-  "Sistemas de Información",
-  "Tecnologías de la Información"])
+  const [especialidadNom, setEspecialidadNom] = useState<string[]>([""])
 
   const [isLoading, setIsLoading] = useState(false);
   const [bool, setBool] = useState(false);
+  const [universidad, setUniversidad] = useState('');
+    const [grado, setGrado] = useState('');
   const [especialidad, setEspecialidad] = useState("");
   const [espCont, setEspCont] = useState<number[]>([0, 0 ,0 ,0 ,0])
 
   const firebase = useFirebaseApp();
   var userKey = useUser<firebase.User>();
-    
-  const handlePredictClick = () => {
-    setIsLoading(true);   
-    ;(async () => {
-      const newData = await getData(userKey.uid)
-      setData(newData.result)
-      setIsLoading(false);
+
       
-    })()
-    
-    
-  }
   if(bool === false){
+
+
+    firebase.database().ref('users/' + userKey.uid + '/grado').once('value').then(function(snapshot)
+    {
+        var grado = snapshot.val() || '';
+        setGrado(grado)
+
+        firebase.database().ref('users/' + userKey.uid + '/universidad').once('value').then(function(snapshot)
+    {
+        var universidad = snapshot.val() || '';
+        setUniversidad(universidad)
+
+
+        firebase.database().ref('asignaturas/'+ universidad + '/' + grado + '/codigos/').once('value').then(function(snapshot)
+      {
+       var cont = 0;
+       var aux1 = [""]
+       var aux2 = [""]
+
+       
+       
+        snapshot.forEach(function(datasnapshot){
+          
+          if(datasnapshot.key != null){
+            
+            aux1[cont] = datasnapshot.key
+            aux2[cont] = datasnapshot.val()
+            cont += 1
+            
+          }
+        })
+
+        setAsignaturasCod(aux1)
+        setAsignaturasNom(aux2) 
+        
+    });
+
+
+    firebase.database().ref('asignaturas/'+ universidad + '/' + grado + '/especialidades/').once('value').then(function(snapshot)
+      {
+       var cont = 0;
+       var aux1 = [""]
+
+       
+       
+        snapshot.forEach(function(datasnapshot){
+          
+          if(datasnapshot.key != null){
+            
+            aux1[cont] = datasnapshot.key
+            cont += 1
+            
+          }
+        })
+
+        setEspecialidadNom(aux1)
+        
+    });
+
+    });
+
+    });
+
+
     firebase.database().ref('recomendaciones/' + userKey.uid + '/especialidadRec/').once('value').then(function(snapshot)
      {
-       if(!(snapshot.val() == null)){
+       if(!(snapshot.val() === null)){
        var cadena = snapshot.val();
         
        setEspecialidad(cadena);
@@ -248,13 +201,66 @@ const Recomendaciones = () => {
       
         setData(cadena)
 
+        
+
        
        
        setBool(true);
     });
   }
 
-  if(!(data[0] == "")){
+  const confirmPrimero = () => {
+    var bool = Boolean(true)
+    firebase.database().ref('asignaturas/' + userKey.uid + '/primero/').on('value', function(snapshot)
+     {
+      snapshot.forEach(function(childSnapshot) {
+        var childData = childSnapshot.val();
+        if(childData === ''){
+          bool = Boolean(false);
+        }
+        if(childData.length < 5){
+          bool = Boolean(false);
+        }
+    });
+     });
+  
+    return (bool);
+  }
+
+  const confirmSegundo = () => {
+    var bool = Boolean(true)
+    firebase.database().ref('asignaturas/' + userKey.uid + '/segundo/').on('value', function(snapshot)
+     {
+      snapshot.forEach(function(childSnapshot) {
+        var childData = childSnapshot.val();
+        if(childData === ''){
+          bool = Boolean(false);
+        }
+        if(childData.length < 5){
+          bool = Boolean(false);
+        }
+    });
+     });
+  
+    return (bool);
+  }
+
+  const confirmTercero = () => {
+    var bool = Boolean(true)
+    firebase.database().ref('asignaturas/' + userKey.uid + '/tercerocuarto/').on('value', function(snapshot)
+     {
+      snapshot.forEach(function(childSnapshot) {
+        var childData = childSnapshot.val();
+        if(childData.length < 5 && childData !== ''){
+          bool = Boolean(false);
+        }
+    });
+     });
+  
+    return (bool);
+  }
+
+  if(!(data[0] === "")){
     firebase.database().ref('recomendaciones/' + userKey.uid + '/asigRecom').update({
       1: (data[0]),
       2: (data[1]),
@@ -269,8 +275,8 @@ const Recomendaciones = () => {
     })
   }
 
-  if(!(especialidad == "")){
-    firebase.database().ref('users/' + userKey.uid).update({
+  if(!(especialidad === "")){
+    firebase.database().ref('recomendaciones/' + userKey.uid).update({
       especialidadRec: especialidad,
     })
   }
@@ -281,45 +287,100 @@ const Recomendaciones = () => {
   }
 
 
+  const handlePredictClick = () => {
+    setIsLoading(true);   
 
-  
-  const handlePredictClickEspecialidad = () => {
-    setIsLoading(true);  
-    
     ;(async () => {
-      const newData = await getData(userKey.uid)
+      const newData = await getData(userKey.uid, universidad, grado)
+      setData(newData.result)
+      setIsLoading(false);
+      
+    })()
+    
+  }
+
+  const handlePredictClickEspecialidad = () => {
+    setIsLoading(true);
+  
+
+    if((data[0] === "")){
+    ;(async () => {
+      const newData = await getData(userKey.uid, universidad, grado)
       setData(newData.result)
       
     data.forEach(function(value){
       var aux = asignaturasCod.indexOf(value);
-
+      var aux_2 = [0, 0 , 0, 0, 0]
       if(aux < 8){
-        espCont[0] += 1
+        aux_2[0] += 1
       }
 
       if(aux > 7 && aux < 16){
-        espCont[1] += 1
+        aux_2[1] += 1
       }
 
       if(aux > 15 && aux < 24){
-        espCont[2] += 1
+        aux_2[2] += 1
       }
 
       if(aux > 23 && aux < 32){
-        espCont[3] += 1
+        aux_2[3] += 1
       }
 
       if(aux > 31 && aux < 40){
-        espCont[4] += 1
+        aux_2[4] += 1
       }
+      setEspCont(aux_2)
     })
     var maximo = Math.max(espCont[0], espCont[1], espCont[2], espCont[3], espCont[4])
+
+    
     
     setEspecialidad(especialidadNom[espCont.indexOf(maximo)]);
     setIsLoading(false);
-    })()
+  })()
+}else{
+  var aux_2 = [0, 0 , 0, 0, 0]
+    data.forEach(function(value){
+      var aux = asignaturasCod.indexOf(value);
+      
+
+      if(aux < 8){
+        aux_2[0] += 1
+      }
+
+      if(aux > 7 && aux < 16){
+        aux_2[1] += 1
+      }
+
+      if(aux > 15 && aux < 24){
+        aux_2[2] += 1
+      }
+
+      if(aux > 23 && aux < 32){
+        aux_2[3] += 1
+      }
+
+      if(aux > 31 && aux < 40){
+        aux_2[4] += 1
+      }
+      setEspCont(aux_2)
+    })
+    var maximo = Math.max(espCont[0], espCont[1], espCont[2], espCont[3], espCont[4])
+
+    
+    
+    setEspecialidad(especialidadNom[espCont.indexOf(maximo)]);
+    setIsLoading(false);
   }
+
   
+    
+    
+    
+    }
+ 
+    
   return (
     <Grid container component="main"  >
       <CssBaseline />
@@ -336,9 +397,25 @@ const Recomendaciones = () => {
   <Avatar className={classes.avatar}>
     <LockOutlinedIcon />
     </Avatar>
-  </Grid>   
+  </Grid> 
 
-    {(data[0] == "") && 
+  {!(confirmPrimero() && confirmSegundo() && confirmTercero()) && 
+<> 
+<Grid>
+        <Card className={classes.resto}>
+          <CardContent>
+            <Typography>
+              Tienes los datos de alguna asignatura incomletos o alguna asignatura de primero o segundo sin rellenar,
+               por favor rellena con 0 si aun no la has cursado.
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+  </>}
+
+  {(confirmPrimero() && confirmSegundo() && confirmTercero()) && 
+<> 
+    {(data[0] === "") && 
       <Grid>
         <Card className={classes.resto}>
           <CardContent>
@@ -355,7 +432,7 @@ const Recomendaciones = () => {
       </Backdrop>
 
 
-    {!(data[0] == "") && 
+    {!(data[0] === "") && 
       <Grid>
     
         <Card className={classes.gold}>
@@ -441,7 +518,8 @@ const Recomendaciones = () => {
 
      }
 
-{!(especialidad == "") &&
+
+{!(especialidad === "") &&
       <Grid item >
         <Card >
           <CardContent>
@@ -453,7 +531,7 @@ const Recomendaciones = () => {
             </Grid >
       }
           
-
+          </>}
     
       </Grid>
      <Grid container direction='row' justify="space-between" alignItems="center">     

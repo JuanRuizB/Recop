@@ -210,8 +210,13 @@ const Administrador = () => {
       })()
 
       firebase.database().ref('users/' + Uid).remove();
+      firebase.database().ref('asignaturas/' + Uid).remove();
+      firebase.database().ref('recomendaciones/' + Uid).remove();
       setBool(true)
       handleChangeX()
+      setOpenL(!openL)
+      handleChangeP()
+
     }
 
     const confirmPassword = () => {
@@ -235,7 +240,7 @@ const Administrador = () => {
         universidad: universidad,
       })
       setCorrect("Datos actualizados correctamente")
-      if(!(newEmail == email)){
+      if(!(newEmail === email)){
         ;(async () => {
           const newData = await patchData(Uid, newEmail, "")
           setCorrect(newData.result)

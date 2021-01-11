@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import 'firebase/auth'
 import {useFirebaseApp, useUser} from 'reactfire'
 import { Link as RouterLink } from 'react-router-dom'
-import firebase from 'firebase'
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,7 +57,6 @@ const MyMenu = () => {
     firebase.database().ref('admin/').once('value').then(function(snapshot)
         {
           snapshot.forEach(function(childSnapshot) {
-            console.log(childSnapshot.val())
             if(user != null){
               if(user.email === childSnapshot.val().email){
                 setAdmin(true);

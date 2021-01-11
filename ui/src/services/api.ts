@@ -13,8 +13,8 @@ export const patchData = async (user: string, email: string, contraseña: string
     return res.data
 }
 
-export const getData = async (user: string) => {
-    const res = await api.post('recommendation/',{user})
+export const getData = async (user: string, universidad: string, grado: string) => {
+    const res = await api.post('recommendation/',{user, universidad, grado})
     return res.data
 }
 

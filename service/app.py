@@ -1,3 +1,5 @@
+import werkzeug
+werkzeug.cached_property = werkzeug.utils.cached_property
 from flask import Flask, request, jsonify, make_response
 from firebase import firebase
 from flask_restplus import Api, Resource, fields
@@ -8,6 +10,7 @@ from model_generator import algoritmo
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import auth
+
 
 # source bin/activate
 # export GOOGLE_APPLICATION_CREDENTIALS="/mnt/c/Users/wen/Desktop/TFG/service-account-file.json"
@@ -23,10 +26,26 @@ app = Api(app = flask_app,
 
 name_space = app.namespace('recommendation', description='Recommendation APIs')
 
-model = app.model('Recommendation params', 
+model_rec = app.model('Recommendation params', 
 					{'User': fields.String(required = True, 
 				  							   description="Usuario", 
-    					  				 	   help="id del usuario")})
+    					  				 	   help="id del usuario"),
+					'Universidad': fields.String(required = True, 
+				  							   description="Universidad", 
+    					  				 	   help="universidad del usuario"),							  
+					'Grado': fields.String(required = True, 
+				  							   description="Grado", 
+    					  				 	   help="grado del usuario"),
+												  
+												  
+												  })
+
+model = app.model('Elimination params', 
+					{'User': fields.String(required = True, 
+				  							   description="Usuario", 
+    					  				 	   help="id del usuario"),										  
+												  
+												  })
 
 model_email = app.model('Modify params', 
 					{'User': fields.String(required = True, 
@@ -59,7 +78,7 @@ class MainClass(Resource):
 		try: 
 			userKey = request.json
 			data = [val for val in userKey.values()]
-			print(data)
+			
 			auth.delete_user(data[0])
 			response = jsonify({
 				"statusCode": 200,
@@ -99,7 +118,7 @@ class MainClass(Resource):
 				)
 				response = jsonify({
 					"statusCode": 200,
-					"status": "Recommendation made",
+					"status": "Modification made",
 					"result": "Contraseña actualizada con exito"
 				})
 
@@ -114,13 +133,13 @@ class MainClass(Resource):
 				"error": str(error)
 			})
 
-	@app.expect(model)		
+	@app.expect(model_rec)		
 	def post(self):
 		
 		try: 
 			userKey = request.json
 			data = [val for val in userKey.values()]
-			algoritmo(str(data[0]))
+			algoritmo(str(data[0]), str(data[1]), str(data[2]))
 			response = jsonify({
 				"statusCode": 200,
 				"status": "Recommendation made",

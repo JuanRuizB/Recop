@@ -10,7 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import ForgotPass from './Forgot_Pass'
 import { Link as RouterLink } from 'react-router-dom'
 import 'firebase/auth'
 import {useFirebaseApp} from 'reactfire'
@@ -41,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
   errorM: {
     color: theme.palette.primary.dark,
   },
+  linkR: {
+    margin: 15
+  }
 }));
 
 
@@ -70,7 +72,7 @@ function SignIn() {
   
       const login = async () =>{
         
-        var promise = await firebase.auth().signInWithEmailAndPassword(email,password).catch(function(error){
+        await firebase.auth().signInWithEmailAndPassword(email,password).catch(function(error){
           var errorCode = error.code;
           if(errorCode === 'auth/invalid-email') {
             setErrors("Dirección de correo electrónico incorrecta.");
@@ -175,15 +177,12 @@ function SignIn() {
     <DialogActions>
     <Grid container  justify="space-between" >
       
-    
-      <Grid item xs={5}>
-        <ForgotPass/>
-      </Grid>
-      <Grid item xs={5}>
-        <Link component={RouterLink} to={routes.registerCont.path} onClick={handleChange} variant="body2">
+
+      <Grid item  >
+        <Link className={classes.linkR} component={RouterLink} to={routes.registerCont.path} onClick={handleChange} variant="body2">
           {"¿No tienes una cuenta? Registrate"}
         </Link>
-      </Grid>
+      </Grid> 
       
       <Grid item xs >
       <Button

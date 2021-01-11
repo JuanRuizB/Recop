@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.dark,
   },
   buttRED: {
-    background: theme.palette.primary.main,
+    background: theme.palette.secondary.main,
     border: 0,
     borderRadius: 3,
     height: 40,
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 2, 2),
   },
   buttBLUE: {
-    background: theme.palette.secondary.main,
+    background: theme.palette.primary.main,
     border: 0,
     borderRadius: 3,
     height: 40,
@@ -95,6 +95,17 @@ const Register = () => {
       });
       if(!(promise == null)){
         handleChange();
+        var user = firebase.auth().currentUser;
+
+        if((user != null)){
+          // eslint-disable-next-line no-labels
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          var userId = user.uid;
+          firebase.database().ref('users/' + userId ).set({
+            email: email,
+          })
+        }
+
       }
 
       }
